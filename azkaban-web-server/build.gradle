@@ -17,6 +17,14 @@ buildscript {
 plugins {
     id "com.moowork.node" version "1.2.0"
 }
+// node 解决
+repositories.whenObjectAdded {
+    if (it instanceof IvyArtifactRepository) {
+        metadataSources {
+            artifact()
+        }
+    }
+}
 
 node {
     // Version of node to use.
