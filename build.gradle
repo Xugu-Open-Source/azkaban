@@ -27,16 +27,16 @@ buildscript {
 }
 
 plugins {
-  id 'com.gradle.build-scan' version '1.9'
+//  id 'com.gradle.build-scan' version '1.9'
   id 'com.github.kt3k.coveralls' version '2.6.3'
   id 'jacoco'
   id 'idea'
 }
 
-buildScan {
-  licenseAgreementUrl = 'https://gradle.com/terms-of-service'
-  licenseAgree = 'yes'
-}
+//buildScan {
+//  licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+//  licenseAgree = 'yes'
+//}
 
 apply plugin: 'com.cinnober.gradle.semver-git'
 
@@ -237,9 +237,9 @@ subprojects {
 
 /**
  * Gradle wrapper task.*/
-task wrapper(type: Wrapper) {
-  distributionType('ALL')
-}
+//task wrapper(type: Wrapper) {
+//  distributionType('ALL')
+//}
 
 if (System.env.TRAVIS == 'true') {
   allprojects {
@@ -283,4 +283,8 @@ coveralls {
 
 tasks.coveralls {
   dependsOn jacocoAggregateReport
+}
+
+tasks.withType(JavaCompile) {
+  options.encoding = 'UTF-8'
 }
