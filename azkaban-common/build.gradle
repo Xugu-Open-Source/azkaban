@@ -38,6 +38,7 @@ dependencies {
     compile deps.metricsCore
     compile deps.metricsJvm
     compile deps.mysqlConnector
+    compile deps.xuguDriver
     compile deps.snakeyaml
     compile deps.velocity
 
