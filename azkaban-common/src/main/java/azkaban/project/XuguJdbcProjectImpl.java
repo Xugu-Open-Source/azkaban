@@ -177,7 +177,7 @@ public class XuguJdbcProjectImpl implements ProjectLoader {
 
   @Override
   public void uploadProjectFile(final int projectId, final int version, final File localFile,
-      final String uploader)
+      final String uploader, final String uploaderIPAddr)
       throws ProjectManagerException {
     final long startMs = System.currentTimeMillis();
     logger.info(String
@@ -196,7 +196,7 @@ public class XuguJdbcProjectImpl implements ProjectLoader {
       /* Step 1: Update DB with new project info */
       // Database storage does not support thin archives, so we just set the startupDependencies file to null.
       addProjectToProjectVersions(transOperator, projectId, version, localFile, null, uploader,
-          computeHash(localFile), null);
+          computeHash(localFile), null, uploaderIPAddr);
       transOperator.getConnection().commit();
 
       /* Step 2: Upload File in chunks to DB */
@@ -242,12 +242,13 @@ public class XuguJdbcProjectImpl implements ProjectLoader {
       final File startupDependencies,
       final String uploader,
       final byte[] md5,
-      final String resourceId) throws ProjectManagerException {
+      final String resourceId,
+      final String uploaderIPAddr) throws ProjectManagerException {
 
     // when one transaction completes, it automatically commits.
     final SQLTransaction<Integer> transaction = transOperator -> {
       addProjectToProjectVersions(transOperator, projectId, version, localFile, startupDependencies, uploader, md5,
-          resourceId);
+          resourceId, uploaderIPAddr);
       return 1;
     };
     try {
@@ -284,7 +285,8 @@ public class XuguJdbcProjectImpl implements ProjectLoader {
       final File startupDependencies,
       final String uploader,
       final byte[] md5,
-      final String resourceId) throws ProjectManagerException {
+      final String resourceId,
+      final String uploaderIPAddr) throws ProjectManagerException {
     final long updateTime = System.currentTimeMillis();
     final String INSERT_PROJECT_VERSION = "INSERT INTO project_versions "
         + "(project_id, version, upload_time, uploader, file_type, file_name, md5, num_chunks, resource_id, "
@@ -303,7 +305,7 @@ public class XuguJdbcProjectImpl implements ProjectLoader {
 
       // Perform the DB update
       transOperator.update(INSERT_PROJECT_VERSION, projectId, version, updateTime, uploader,
-          lowercaseFileExtension, localFile.getName(), md5, 0, resourceId, startupDependenciesStream);
+          lowercaseFileExtension, localFile.getName(), md5, 0, resourceId, startupDependenciesStream,uploaderIPAddr);
     } catch (final SQLException e) {
       final String msg = String
           .format("Error initializing project id: %d version: %d ", projectId, version);
