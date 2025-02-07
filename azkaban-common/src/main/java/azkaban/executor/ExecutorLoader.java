@@ -308,6 +308,11 @@ public interface ExecutorLoader {
   int removeExecutionLogsByTime(long millis, int recordCleanupLimit)
       throws ExecutorManagerException;
 
+  default int removeExecutionLogsByTimeWithXugu(long millis, int recordCleanupLimit)
+          throws ExecutorManagerException {
+    return 0;
+  }
+
   void unsetExecutorIdForExecution(final int executionId) throws ExecutorManagerException;
 
   int selectAndUpdateExecution(final int executorId, boolean isActive, final DispatchMethod dispatchMethod)

@@ -364,6 +364,12 @@ public class JdbcExecutorLoader implements ExecutorLoader {
   }
 
   @Override
+  public int removeExecutionLogsByTimeWithXugu(final long millis, final int recordCleanupLimit)
+          throws ExecutorManagerException {
+    return this.executionLogsDao.removeExecutionLogsByTimeWithXugu(millis, recordCleanupLimit);
+  }
+
+  @Override
   public void unassignExecutor(final int executionId) throws ExecutorManagerException {
     this.assignExecutorDao.unassignExecutor(executionId);
   }

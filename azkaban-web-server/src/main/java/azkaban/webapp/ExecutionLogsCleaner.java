@@ -69,8 +69,13 @@ public class ExecutionLogsCleaner {
    private void cleanOldExecutionLogs(final long millis) {
       final long beforeDeleteLogsTimestamp = System.currentTimeMillis();
       try {
-         final int count = this.executorLoader.removeExecutionLogsByTime(millis, this.executionLogCleanupRecordLimit);
-         logger.info("Cleaned up " + count + " log entries.");
+         String dataBaseType = azkProps.getString("database.type");
+         if ("xugu".equalsIgnoreCase(dataBaseType)) {
+            final int count = this.executorLoader.removeExecutionLogsByTimeWithXugu(millis, this.executionLogCleanupRecordLimit);
+         } else {
+            final int count = this.executorLoader.removeExecutionLogsByTime(millis, this.executionLogCleanupRecordLimit);
+            logger.info("Cleaned up " + count + " log entries.");
+         }
       } catch (final Exception e) {
          logger.error("log clean up failed. ", e);
       }
