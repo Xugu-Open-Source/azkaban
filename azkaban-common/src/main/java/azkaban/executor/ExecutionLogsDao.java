@@ -154,6 +154,25 @@ public class ExecutionLogsDao {
     return totalRecordsRemoved;
   }
 
+  int removeExecutionLogsByTimeWithXugu(final long millis, final int recordCleanupLimit)
+          throws ExecutorManagerException {
+    int totalRecordsRemoved = 0;
+    int removedRecords;
+    do {
+      removedRecords = removeExecutionLogsBatchWithXugu(millis, recordCleanupLimit);
+      logger.debug("Removed batch of execution logs. Count of records removed in this batch: "
+              + removedRecords);
+      totalRecordsRemoved = totalRecordsRemoved + removedRecords;
+      // Adding sleep of 1 second
+      try {
+        Thread.sleep(1000L);
+      } catch (InterruptedException e) {
+        logger.error("Execution logs cleanup thread's sleep was interrupted.", e);
+      }
+    } while (removedRecords == recordCleanupLimit);
+    return totalRecordsRemoved;
+  }
+
   int removeExecutionLogsBatch(final long millis, final int recordCleanupLimit)
       throws ExecutorManagerException {
     final String DELETE_BY_TIME =
@@ -164,6 +183,19 @@ public class ExecutionLogsDao {
       logger.error("delete execution logs failed", e);
       throw new ExecutorManagerException(
           "Error deleting old execution_logs before " + millis, e);
+    }
+  }
+
+  int removeExecutionLogsBatchWithXugu(final long millis, final int recordCleanupLimit)
+          throws ExecutorManagerException {
+    final String DELETE_BY_TIME =
+            "DELETE FROM execution_logs WHERE upload_time < ? and EXEC_ID IN (SELECT EXEC_ID FROM execution_logs LIMIT ?)";
+    try {
+      return this.dbOperator.update(DELETE_BY_TIME, millis, recordCleanupLimit);
+    } catch (final SQLException e) {
+      logger.error("delete execution logs failed", e);
+      throw new ExecutorManagerException(
+              "Error deleting old execution_logs before " + millis, e);
     }
   }
 
