@@ -290,7 +290,7 @@ public class XuguJdbcProjectImpl implements ProjectLoader {
     final long updateTime = System.currentTimeMillis();
     final String INSERT_PROJECT_VERSION = "INSERT INTO project_versions "
         + "(project_id, version, upload_time, uploader, file_type, file_name, md5, num_chunks, resource_id, "
-        + "startup_dependencies) values (?,?,?,?,?,?,?,?,?,?)";
+        + "startup_dependencies, uploader_ip_addr) values (?,?,?,?,?,?,?,?,?,?,?)";
 
     try {
       /*
