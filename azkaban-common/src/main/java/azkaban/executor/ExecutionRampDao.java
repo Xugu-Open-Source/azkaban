@@ -237,7 +237,7 @@ public class ExecutionRampDao {
   private static class FetchExecutableRampExceptionalJobItems implements ResultSetHandler<ExecutableRampExceptionalJobItemsMap> {
 
     static String FETCH_EXECUTABLE_RAMP_EXCEPTIONAL_JOB_ITEMS =
-        "SELECT rampId, flowId, jobId, treatment, timestamp "
+        "SELECT rampId, flowId, jobId, treatment, `timestamp` "
             + "FROM ramp_exceptional_job_items ";
 
     @Override
