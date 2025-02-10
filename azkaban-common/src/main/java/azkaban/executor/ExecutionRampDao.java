@@ -196,7 +196,7 @@ public class ExecutionRampDao {
   private static class FetchExecutableRampExceptionalFlowItems implements ResultSetHandler<ExecutableRampExceptionalFlowItemsMap> {
 
     static String FETCH_EXECUTABLE_RAMP_EXCEPTIONAL_FLOW_ITEMS =
-        "SELECT rampId, flowId, treatment, timestamp "
+        "SELECT rampId, flowId, treatment, `timestamp` "
             + "FROM ramp_exceptional_flow_items ";
 
     @Override
@@ -541,7 +541,7 @@ public class ExecutionRampDao {
           .collect(Collectors.toList()).toArray(new Object[0][]);
 
       if (parameters.length > 0) {
-        sqlCommand = "INSERT INTO ramp_exceptional_flow_items (rampId, flowId, treatment, timestamp) VALUES(?,?,?,?)";
+        sqlCommand = "INSERT INTO ramp_exceptional_flow_items (rampId, flowId, treatment, `timestamp`) VALUES(?,?,?,?)";
 
         this.dbOperator.batch(sqlCommand, parameters);
 
