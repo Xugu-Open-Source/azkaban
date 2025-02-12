@@ -49,9 +49,17 @@ dependencies {
 task concat() {
     doLast {
         ext.destFile = 'build/sql/create-all-sql-' + version + '.sql';
+        ext.xuguDestFile = 'build/sql/create-all-sql-' + version + '-xugu.sql';
         ant.concat(destfile: destFile, fixlastline: 'yes') {
             logger.info('Concating create scripts to ' + destFile)
             fileset(dir: 'src/main/sql') {
+                exclude(name: 'database.properties')
+                exclude(name: 'upgrade.*.sql')
+            }
+        }
+        ant.concat(destfile: xuguDestFile, fixlastline: 'yes') {
+            logger.info('Concating create scripts to ' + xuguDestFile)
+            fileset(dir: 'src/main/xugu') {
                 exclude(name: 'database.properties')
                 exclude(name: 'upgrade.*.sql')
             }
@@ -68,6 +76,9 @@ distributions {
         contents {
             from('src/main/sql')
             from("$buildDir/sql")
+            from('src/main/xugu') {
+                into 'xugu'
+            }
         }
     }
 }
