@@ -41,6 +41,9 @@ dependencies {
     compile deps.metricsCore
     compile deps.metricsJvm
     compile deps.mysqlConnector
+    compile(deps.xuguDriver) {
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+    }
     compile deps.snakeyaml
     compile deps.velocity
 
