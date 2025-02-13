@@ -120,6 +120,7 @@ ext.deps = [
         snakeyaml           : 'org.yaml:snakeyaml:1.18',
         velocity            : 'org.apache.velocity:velocity:1.7',
         velocityTools       : 'org.apache.velocity:velocity-tools:2.0',
+        xuguDriver          : 'com.xugudb:xugu-jdbc:12.3.2',
 ]
 
 subprojects {
