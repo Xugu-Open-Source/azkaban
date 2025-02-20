@@ -19,6 +19,7 @@ package azkaban.database;
 import azkaban.utils.Props;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 public class DataSourceUtils {
@@ -54,6 +55,15 @@ public class DataSourceUtils {
       final Path h2DbPath = Paths.get(path).toAbsolutePath();
       logger.info("h2 DB path: " + h2DbPath);
       dataSource = getH2DataSource(h2DbPath);
+    } else if (databaseType.equals("xugu")) {
+      final int port = props.getInt("xugu.port");
+      final String host = props.getString("xugu.host");
+      final String database = props.getString("xugu.database");
+      final String user = props.getString("xugu.user");
+      final String password = props.getString("xugu.password");
+      final String schema = props.getString("xugu.schema");
+
+      dataSource = getXuguDataSource(host, port, database, user, password, schema);
     }
 
     return dataSource;
@@ -73,6 +83,15 @@ public class DataSourceUtils {
    */
   public static AzkabanDataSource getH2DataSource(final Path file) {
     return new EmbeddedH2BasicDataSource(file);
+  }
+
+  /**
+   * Create xugu DataSource
+   */
+  public static AzkabanDataSource getXuguDataSource(final String host, final Integer port,
+                                                    final String dbName, final String user, final String password, final String schema) {
+
+    return new XuguBasicDataSource(host, port, dbName, user, password, schema);
   }
 
   /**
@@ -155,6 +174,41 @@ public class DataSourceUtils {
     @Override
     public String getDBType() {
       return "h2";
+    }
+  }
+
+  /**
+   * Xugu Datasource
+   */
+  public static class XuguBasicDataSource extends AzkabanDataSource {
+
+    private final String url;
+
+    private XuguBasicDataSource(final String host, final int port, final String dbName,
+                                final String user, final String password, final String schema) {
+      super();
+
+      this.url = "jdbc:xugu://" + (host + ":" + port + "/" + dbName);
+      addConnectionProperty("char_set", "UTF8");
+      if (StringUtils.isNotBlank(schema)) {
+        addConnectionProperty("current_schema", schema);
+      }
+      setDriverClassName("com.xugu.cloudjdbc.Driver");
+      setUsername(user);
+      setPassword(password);
+      setUrl(this.url);
+      setValidationQuery("/* Azkaban ping */ select 1");
+      setTestOnBorrow(true);
+    }
+
+    @Override
+    public boolean allowsOnDuplicateKey() {
+      return true;
+    }
+
+    @Override
+    public String getDBType() {
+      return "xugu";
     }
   }
 }

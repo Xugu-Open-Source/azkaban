@@ -273,7 +273,7 @@ public class ExecutionRampDao {
     FIELD_RAMP_ID("rampId"),
     FIELD_FLOW_ID("flowId"),
     FIELD_TREATMENT("treatment"),
-    FIELD_TIME_STAMP("timestamp");
+    FIELD_TIME_STAMP("`timestamp`");
 
     final String value;
 
@@ -338,7 +338,7 @@ public class ExecutionRampDao {
     FIELD_FLOW_ID("flowId"),
     FIELD_JOB_ID("jobId"),
     FIELD_TREATMENT("treatment"),
-    FIELD_TIME_STAMP("timestamp");
+    FIELD_TIME_STAMP("`timestamp`");
 
     final String value;
 
@@ -712,7 +712,7 @@ public class ExecutionRampDao {
           .collect(Collectors.toList()).toArray(new Object[0][]);
 
       if (parameters.length > 0) {
-        sqlCommand = "INSERT INTO ramp_exceptional_flow_items (rampId, flowId, treatment, timestamp) VALUES(?,?,?,?)";
+        sqlCommand = "INSERT INTO ramp_exceptional_flow_items (rampId, flowId, treatment, `timestamp`) VALUES(?,?,?,?)";
 
         this.dbOperator.batch(sqlCommand, parameters);
 

@@ -20,6 +20,7 @@ import azkaban.Constants.ConfigurationKeys;
 import azkaban.db.AzkabanDataSource;
 import azkaban.db.H2FileDataSource;
 import azkaban.db.MySQLDataSource;
+import azkaban.db.XuguDataSource;
 import azkaban.executor.ExecutorLoader;
 import azkaban.executor.JdbcExecutorLoader;
 import azkaban.imagemgmt.converters.Converter;
@@ -42,6 +43,7 @@ import azkaban.project.InMemoryProjectCache;
 import azkaban.project.JdbcProjectImpl;
 import azkaban.project.ProjectCache;
 import azkaban.project.ProjectLoader;
+import azkaban.project.XuguJdbcProjectImpl;
 import azkaban.spi.AzkabanEventReporter;
 import azkaban.spi.Storage;
 import azkaban.spi.StorageException;
@@ -90,10 +92,15 @@ public class AzkabanCommonModule extends AbstractModule {
   @Override
   protected void configure() {
     install(new AzkabanCoreModule(this.props));
+    String dataBaseType = props.getString("database.type");
+    if ( "xugu".equalsIgnoreCase(dataBaseType)){
+      bind(ProjectLoader.class).to(XuguJdbcProjectImpl.class);
+    }else {
+      bind(ProjectLoader.class).to(JdbcProjectImpl.class);
+    }
     bind(Storage.class).to(resolveStorageClassType());
     bind(AzkabanDataSource.class).to(resolveDataSourceType());
     bind(TriggerLoader.class).to(JdbcTriggerImpl.class);
-    bind(ProjectLoader.class).to(JdbcProjectImpl.class);
     bind(ExecutorLoader.class).to(JdbcExecutorLoader.class);
     bind(ProjectCache.class).to(InMemoryProjectCache.class);
     bind(OsCpuUtil.class).toProvider(() -> {
@@ -134,6 +141,8 @@ public class AzkabanCommonModule extends AbstractModule {
     final String databaseType = this.props.getString("database.type");
     if (databaseType.equals("h2")) {
       return H2FileDataSource.class;
+    } else if (databaseType.equals("xugu")) {
+      return XuguDataSource.class;
     } else {
       return MySQLDataSource.class;
     }
