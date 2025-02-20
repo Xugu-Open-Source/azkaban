@@ -40,7 +40,7 @@ distributions {
             from(project(':azkaban-db').files('src/main/sql')) {
                 into('sql')
             }
-            from(project(':azkaban-db').files('src/main/xugu')) {
+            from(project(':azkaban-db').files('src/main/sql/xugu')) {
                 into('sql/xugu')
             }
             // Get the files from sub-dir of distribution of another sub-project

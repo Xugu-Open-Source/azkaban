@@ -53,6 +53,7 @@ public class AzkabanDatabaseSetup {
   private static final Logger logger = Logger
       .getLogger(AzkabanDatabaseSetup.class);
   private static final String DEFAULT_SCRIPT_PATH = "sql";
+  private static final String DEFAULT_SCRIPT_PATH_XUGU = "sql/xugu";
   private static final String CREATE_SCRIPT_PREFIX = "create.";
   private static final String UPDATE_SCRIPT_PREFIX = "update.";
   private static final String SQL_SCRIPT_SUFFIX = ".sql";
@@ -76,21 +77,22 @@ public class AzkabanDatabaseSetup {
 
   public AzkabanDatabaseSetup(final Props props) {
     this(DataSourceUtils.getDataSource(props));
+    final String databaseType = props.getString("database.type");
     this.scriptPath =
-        props.getString(DATABASE_SQL_SCRIPT_DIR, DEFAULT_SCRIPT_PATH);
+            props.getString(DATABASE_SQL_SCRIPT_DIR, "xugu".equals(databaseType) ? DEFAULT_SCRIPT_PATH_XUGU : DEFAULT_SCRIPT_PATH);
   }
 
   public AzkabanDatabaseSetup(final AzkabanDataSource ds) {
     this.dataSource = ds;
     if (this.scriptPath == null) {
-      this.scriptPath = DEFAULT_SCRIPT_PATH;
+      this.scriptPath = "xugu".equals(dataSource.getDBType()) ? DEFAULT_SCRIPT_PATH_XUGU : DEFAULT_SCRIPT_PATH;
     }
   }
 
   // TODO kunkun-tang: Refactor this class. loadTableInfo method should sit inside constructor
   public AzkabanDatabaseSetup(final AzkabanDataSource ds, final Props props) {
     this.dataSource = ds;
-    this.scriptPath = props.getString(DATABASE_SQL_SCRIPT_DIR, DEFAULT_SCRIPT_PATH);
+    this.scriptPath = props.getString(DATABASE_SQL_SCRIPT_DIR, "xugu".equals(dataSource.getDBType()) ? DEFAULT_SCRIPT_PATH_XUGU : DEFAULT_SCRIPT_PATH);
   }
 
   public void loadTableInfo() throws IOException, SQLException {

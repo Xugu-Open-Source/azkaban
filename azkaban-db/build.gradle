@@ -55,11 +55,12 @@ task concat() {
             fileset(dir: 'src/main/sql') {
                 exclude(name: 'database.properties')
                 exclude(name: 'upgrade.*.sql')
+                exclude(name: 'xugu/*.sql')
             }
         }
         ant.concat(destfile: xuguDestFile, fixlastline: 'yes') {
             logger.info('Concating create scripts to ' + xuguDestFile)
-            fileset(dir: 'src/main/xugu') {
+            fileset(dir: 'src/main/sql/xugu') {
                 exclude(name: 'database.properties')
                 exclude(name: 'upgrade.*.sql')
             }
@@ -76,7 +77,7 @@ distributions {
         contents {
             from('src/main/sql')
             from("$buildDir/sql")
-            from('src/main/xugu') {
+            from('src/main/sql/xugu') {
                 into 'xugu'
             }
         }
